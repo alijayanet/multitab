@@ -10,7 +10,7 @@ apt install git curl -y
 git clone https://github.com/alijayanet/multitab
 ```
 ```
-cd genieacs
+cd multitab
 ```
 ```
 chmod +x install.sh && chmod +x demo.sh
