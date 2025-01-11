@@ -133,4 +133,4 @@ echo -e "${GREEN}=================== Informasi: Whatsapp 081-947-215-703 =======
 echo -e "${GREEN}============================================================================${NC}"
 cd -
 sudo mongorestore --db=genieacs --drop genieacs
-unzip multitab.zip -r /usr/lib/node_modules/
+unzip multitab.zip -d /usr/lib/node_modules/
