@@ -13,7 +13,7 @@ git clone https://github.com/alijayanet/multitab
 cd multitab
 ```
 ```
-chmod +x install.sh && chmod +x demo.sh
+chmod +x install.sh
 ```
 INSTALL GENIEACS + VIRTUAL PARAMETER MULTITAB
 ```
