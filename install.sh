@@ -1,136 +1,66 @@
 #!/bin/bash
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
-local_ip=$(hostname -I | awk '{print $1}')
-echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}=========== AAA   LL      IIIII     JJJ   AAA   YY   YY   AAA ==============${NC}"   
-echo -e "${GREEN}========== AAAAA  LL       III      JJJ  AAAAA  YY   YY  AAAAA =============${NC}" 
-echo -e "${GREEN}========= AA   AA LL       III      JJJ AA   AA  YYYYY  AA   AA ============${NC}"
-echo -e "${GREEN}========= AAAAAAA LL       III  JJ  JJJ AAAAAAA   YYY   AAAAAAA ============${NC}"
-echo -e "${GREEN}========= AA   AA LLLLLLL IIIII  JJJJJ  AA   AA   YYY   AA   AA ============${NC}"
-echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}========================= . Info 081-947-215-703 ===========================${NC}"
-echo -e "${GREEN}============================================================================${NC}"
-echo -e "${RED}${NC}"
-echo -e "${GREEN} Apakah anda ingin melanjutkan? (y/n)${NC}"
-read confirmation
 
-if [ "$confirmation" != "y" ]; then
-    echo -e "${GREEN}Install dibatalkan..${NC}"
-   
-    exit 1
+# Memeriksa apakah nvm sudah terinstal
+if ! command -v nvm &> /dev/null
+then
+    echo "nvm tidak ditemukan. Menginstal nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    # Memuat nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 fi
-for ((i = 5; i >= 1; i--)); do
-	sleep 1
-    echo "Lanjut Bos... $i. Tekan ctrl+c untuk membatalkan"
-done
 
-#MongoDB
-if ! sudo systemctl is-active --quiet mongod; then
-    curl -s \
-${url_install}\
-mongod.sh | \
-sudo bash
+# Menginstal Node.js versi 20 atau lebih
+echo "Menginstal Node.js versi 20..."
+nvm install 20
+nvm use 20
+
+# Memastikan npm terinstal
+if ! command -v npm &> /dev/null
+then
+    echo "npm tidak ditemukan. Menginstal npm..."
+    npm install -g npm
+fi
+
+# Memeriksa apakah direktori saat ini adalah repositori Git
+if [ ! -d ".git" ]; then
+    echo "Direktori saat ini bukan repositori Git. Mengkloning repositori..."
+    git clone https://github.com/genieacs/genieacs.git
+    cd genieacs || exit
 else
-    echo -e "${GREEN}============================================================================${NC}"
-    echo -e "${GREEN}=================== mongodb sudah terinstall sebelumnya. ===================${NC}"
-    echo -e "${GREEN}============================================================================${NC}"
-fi
-sleep 3
-if ! sudo systemctl is-active --quiet mongod; then
-    sudo rm /tmp/install.sh
-    exit 1
+    echo "Direktori saat ini adalah repositori Git."
 fi
 
-#NodeJS Install
-check_node_version() {
-    if command -v node > /dev/null 2>&1; then
-        NODE_VERSION=$(node -v | cut -d 'v' -f 2)
-        NODE_MAJOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 1)
-        NODE_MINOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 2)
-
-        if [ "$NODE_MAJOR_VERSION" -lt 12 ] || { [ "$NODE_MAJOR_VERSION" -eq 12 ] && [ "$NODE_MINOR_VERSION" -lt 13 ]; } || [ "$NODE_MAJOR_VERSION" -gt 22 ]; then
-            return 1
-        else
-            return 0
-        fi
-    else
-        return 1
-    fi
-}
-
-if ! check_node_version; then
-    curl -s \
-${url_install}\
-nodejs.sh | \
-sudo bash
-else
-    NODE_VERSION=$(node -v | cut -d 'v' -f 2)
-    echo -e "${GREEN}============================================================================${NC}"
-    echo -e "${GREEN}============== NodeJS sudah terinstall versi ${NODE_VERSION}. ==============${NC}"
-    echo -e "${GREEN}========================= Lanjut install GenieACS ==========================${NC}"
-    echo -e "${GREEN}============================================================================${NC}"
-
-fi
-if ! check_node_version; then
-    sudo rm /tmp/install.sh
-    exit 1
+# Menginstal MongoDB
+if ! command -v mongo &> /dev/null
+then
+    echo "MongoDB tidak ditemukan. Menginstal MongoDB..."
+    wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/multiverse amd64 mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+    sudo apt-get update
+    sudo apt-get install -y mongodb-org
+    sudo systemctl start mongod
+    sudo systemctl enable mongod
 fi
 
-#APP
-if ! sudo systemctl is-active --quiet genieacs-{cwmp,fs,ui,nbi}; then
-    curl -s \
-${url_install}\
-app.sh | \
-sudo bash
-    sleep 3
-    if ! sudo systemctl is-active --quiet genieacs-{cwmp,fs,ui,nbi}; then
-        echo -e "${RED}============================================================================${NC}"
-        echo -e "${RED}======================= INSTALASI TIDAK BISA DILANJUTKAN. ==================${NC}"
-        echo -e "${GREEN}=================== Informasi: Whatsapp 081-947-215-703 ==================${NC}"
-        echo -e "${RED}============================================================================${NC}"
-        sudo rm /tmp/install.sh
-        exit 1
-    fi
+# Menginstal GenieACS secara global
+echo "Menginstal GenieACS secara global..."
+sudo npm install -g genieacs
 
-else
-    echo -e "${GREEN}============================================================================${NC}"
-    echo -e "${GREEN}=================== GenieACS sudah terinstall sebelumnya. ==================${NC}"
-    echo -e "${GREEN}============================================================================${NC}"
-fi
+# Mengatur genieacs-ui dengan ui-jwt-secret
+echo "Mengatur genieacs-ui dengan ui-jwt-secret..."
+genieacs-ui --ui-jwt-secret secret
 
+# Menginstal dependensi
+echo "Menginstal dependensi..."
+npm install
 
-sleep 3
+# Menjalankan build
+echo "Membangun proyek..."
+npm run build
 
-if ! sudo systemctl is-active --quiet genieacs-{cwmp,fs,ui,nbi}; then
-    sudo rm /tmp/install.sh
-    exit 1
-fi
-
-echo -e "${GREEN}============================================================================${NC}"
-echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
-echo -e "${GREEN}=================== Informasi: Whatsapp 081-947-215-703 ====================${NC}"
-echo -e "${GREEN}============================================================================${NC}"
-
-echo -e "${GREEN}Sekarang install parameter. Apakah anda ingin melanjutkan? (y/n)${NC}"
-read confirmation
-
-if [ "$confirmation" != "y" ]; then
-    echo -e "${GREEN}Install dibatalkan..${NC}"
-    
-    exit 1
-fi
-for ((i = 5; i >= 1; i--)); do
-	sleep 1
-    echo "Lanjut Install Parameter $i. Tekan ctrl+c untuk membatalkan"
-done
-echo -e "${GREEN}============================================================================$
-echo -e "${GREEN}================== VIRTUAL PARAMETER BERHASIL DI INSTALL ===================${NC}"
-echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
-echo -e "${GREEN}=================== Informasi: Whatsapp 081-947-215-703 ====================${NC}"
-echo -e "${GREEN}============================================================================${NC}"
-cd -
+# Merestore database dari backup
+echo "Merestore database dari backup..."
 sudo mongorestore --db=genieacs --drop genieacs
-unzip multitab.zip -d /usr/lib/node_modules/
+
+echo "Instalasi selesai. Anda dapat menjalankan proyek dengan perintah yang sesuai."
