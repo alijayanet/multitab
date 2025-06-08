@@ -20,6 +20,7 @@ mongorestore --db genieacs --drop /root/db
 ```
 reboot
 ```
+## coppy script ini ke admin config multitab device
 ```
 - label: "'Summary'"
   route: "'summary'"
