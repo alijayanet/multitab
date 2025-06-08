@@ -21,6 +21,15 @@ Script instalasi otomatis untuk GenieACS dengan dukungan NodeJS v20 dan MongoDB.
 - Restart layanan
 
 ## Cara Penggunaan
+```
+apt install git curl -y
+```
+```
+git clone https://github.com/alijayanet/multitab
+```
+```
+cd multitab
+```
 
 1. Berikan izin eksekusi pada script:
 ```bash
