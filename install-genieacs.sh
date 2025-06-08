@@ -1,80 +1,107 @@
-#!/bin/bash
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+local_ip=$(hostname -I | awk '{print $1}')
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}=========== AAA   LL      IIIII     JJJ   AAA   YY   YY   AAA ==============${NC}"   
+echo -e "${GREEN}========== AAAAA  LL       III      JJJ  AAAAA  YY   YY  AAAAA =============${NC}" 
+echo -e "${GREEN}========= AA   AA LL       III      JJJ AA   AA  YYYYY  AA   AA ============${NC}"
+echo -e "${GREEN}========= AAAAAAA LL       III  JJ  JJJ AAAAAAA   YYY   AAAAAAA ============${NC}"
+echo -e "${GREEN}========= AA   AA LLLLLLL IIIII  JJJJJ  AA   AA   YYY   AA   AA ============${NC}"
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}========================= . Info 081-947-215-703 ===========================${NC}"
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}${NC}"
+echo -e "${GREEN}Autoinstall GenieACS.${NC}"
+echo -e "${GREEN}${NC}"
+echo -e "${GREEN}======================================================================================${NC}"
+echo -e "${RED}${NC}"
+echo -e "${GREEN}Sebelum melanjutkan, silahkan baca terlebih dahulu. Apakah anda ingin melanjutkan? (y/n)${NC}"
+read confirmation
 
-echo "========================================="
-echo "     ALIJAYA GENIEACS MULTITAB    "
-echo "========================================="
+if [ "$confirmation" != "y" ]; then
+    echo -e "${GREEN}Install dibatalkan. Tidak ada perubahan dalam ubuntu server anda.${NC}"
+    /tmp/install.sh
+    exit 1
+fi
+for ((i = 5; i >= 1; i--)); do
+	sleep 1
+    echo "Melanjutkan dalam $i. Tekan ctrl+c untuk membatalkan"
+done
 
-# Fungsi untuk mengecek status instalasi
-check_status() {
-    if [ $? -eq 0 ]; then
-        echo "✅ $1 berhasil"
+#Install NodeJS
+check_node_version() {
+    if command -v node > /dev/null 2>&1; then
+        NODE_VERSION=$(node -v | cut -d 'v' -f 2)
+        NODE_MAJOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 1)
+        NODE_MINOR_VERSION=$(echo $NODE_VERSION | cut -d '.' -f 2)
+
+        if [ "$NODE_MAJOR_VERSION" -lt 12 ] || { [ "$NODE_MAJOR_VERSION" -eq 12 ] && [ "$NODE_MINOR_VERSION" -lt 13 ]; } || [ "$NODE_MAJOR_VERSION" -gt 22 ]; then
+            return 1
+        else
+            return 0
+        fi
     else
-        echo "❌ $1 gagal"
-        exit 1
+        return 1
     fi
 }
 
-# Install NodeJS v20
-echo "📦 Menginstal NodeJS v20..."
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-check_status "Instalasi NodeJS"
+if ! check_node_version; then
+    echo -e "${GREEN}================== Menginstall NodeJS ==================${NC}"
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+    sudo apt-get install -y nodejs
+    echo -e "${GREEN}================== Sukses NodeJS ==================${NC}"
+else
+    NODE_VERSION=$(node -v | cut -d 'v' -f 2)
+    echo -e "${GREEN}============================================================================${NC}"
+    echo -e "${GREEN}============== NodeJS sudah terinstall versi ${NODE_VERSION}. ==============${NC}"
+    echo -e "${GREEN}========================= Lanjut install GenieACS ==========================${NC}"
+fi
 
-# Install MongoDB
-echo "📦 Menginstal MongoDB..."
-wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-sudo apt-get update
-sudo apt-get install -y mongodb-org
-check_status "Instalasi MongoDB"
+#MongoDB
+if !  systemctl is-active --quiet mongod; then
+    echo -e "${GREEN}================== Menginstall MongoDB ==================${NC}"
+    curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+    apt-key list
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    apt update
+    apt install mongodb-org -y
+    systemctl start mongod.service
+    systemctl start mongod
+    systemctl enable mongod
+    mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+    echo -e "${GREEN}================== Sukses MongoDB ==================${NC}"
+else
+    echo -e "${GREEN}============================================================================${NC}"
+    echo -e "${GREEN}=================== mongodb sudah terinstall sebelumnya. ===================${NC}"
+fi
 
-# Start MongoDB
-echo "🚀 Menjalankan MongoDB..."
-sudo systemctl start mongod
-sudo systemctl enable mongod
-check_status "Menjalankan MongoDB"
-
-# Install GenieACS
-echo "📦 Menginstal GenieACS..."
-sudo npm install -g genieacs
-check_status "Instalasi GenieACS"
-
-# Buat user sistem untuk GenieACS
-echo "👤 Membuat user sistem GenieACS..."
-sudo useradd --system --no-create-home --user-group genieacs
-check_status "Pembuatan user sistem"
-
-# Buat direktori yang diperlukan
-echo "📁 Membuat direktori yang diperlukan..."
-sudo mkdir -p /opt/genieacs/ext
-sudo mkdir -p /var/log/genieacs
-sudo chown genieacs:genieacs /opt/genieacs/ext
-sudo chown genieacs:genieacs /var/log/genieacs
-check_status "Pembuatan direktori"
-
-# Buat file konfigurasi environment
-echo "⚙️ Membuat file konfigurasi..."
-cat > /tmp/genieacs.env << EOL
+#GenieACS
+if !  systemctl is-active --quiet genieacs-{cwmp,fs,ui,nbi}; then
+    echo -e "${GREEN}================== Menginstall genieACS CWMP, FS, NBI, UI ==================${NC}"
+    npm install -g genieacs@1.2.13
+    useradd --system --no-create-home --user-group genieacs || true
+    mkdir -p /opt/genieacs
+    mkdir -p /opt/genieacs/ext
+    chown genieacs:genieacs /opt/genieacs/ext
+    cat << EOF > /opt/genieacs/genieacs.env
 GENIEACS_CWMP_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-cwmp-access.log
 GENIEACS_NBI_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-nbi-access.log
 GENIEACS_FS_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-fs-access.log
 GENIEACS_UI_ACCESS_LOG_FILE=/var/log/genieacs/genieacs-ui-access.log
 GENIEACS_DEBUG_FILE=/var/log/genieacs/genieacs-debug.yaml
-NODE_OPTIONS=--enable-source-maps
 GENIEACS_EXT_DIR=/opt/genieacs/ext
-GENIEACS_UI_JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(128).toString('hex'))")
-EOL
-
-sudo mv /tmp/genieacs.env /opt/genieacs/genieacs.env
-sudo chown genieacs:genieacs /opt/genieacs/genieacs.env
-sudo chmod 600 /opt/genieacs/genieacs.env
-check_status "Konfigurasi environment"
-
-# Buat service files
-echo "🔧 Membuat file service systemd..."
-
-# CWMP Service
-sudo tee /etc/systemd/system/genieacs-cwmp.service << EOL
+GENIEACS_UI_JWT_SECRET=secret
+EOF
+    chown genieacs:genieacs /opt/genieacs/genieacs.env
+    chown genieacs. /opt/genieacs -R
+    chmod 600 /opt/genieacs/genieacs.env
+    mkdir -p /var/log/genieacs
+    chown genieacs. /var/log/genieacs
+    # create systemd unit files
+## CWMP
+    cat << EOF > /etc/systemd/system/genieacs-cwmp.service
 [Unit]
 Description=GenieACS CWMP
 After=network.target
@@ -86,56 +113,55 @@ ExecStart=/usr/bin/genieacs-cwmp
 
 [Install]
 WantedBy=default.target
-EOL
+EOF
 
-# NBI Service
-sudo tee /etc/systemd/system/genieacs-nbi.service << EOL
+## NBI
+    cat << EOF > /etc/systemd/system/genieacs-nbi.service
 [Unit]
 Description=GenieACS NBI
 After=network.target
-
+ 
 [Service]
 User=genieacs
 EnvironmentFile=/opt/genieacs/genieacs.env
 ExecStart=/usr/bin/genieacs-nbi
-
+ 
 [Install]
 WantedBy=default.target
-EOL
+EOF
 
-# FS Service
-sudo tee /etc/systemd/system/genieacs-fs.service << EOL
+## FS
+    cat << EOF > /etc/systemd/system/genieacs-fs.service
 [Unit]
 Description=GenieACS FS
 After=network.target
-
+ 
 [Service]
 User=genieacs
 EnvironmentFile=/opt/genieacs/genieacs.env
 ExecStart=/usr/bin/genieacs-fs
-
+ 
 [Install]
 WantedBy=default.target
-EOL
+EOF
 
-# UI Service
-sudo tee /etc/systemd/system/genieacs-ui.service << EOL
+## UI
+    cat << EOF > /etc/systemd/system/genieacs-ui.service
 [Unit]
 Description=GenieACS UI
 After=network.target
-
+ 
 [Service]
 User=genieacs
 EnvironmentFile=/opt/genieacs/genieacs.env
 ExecStart=/usr/bin/genieacs-ui
-
+ 
 [Install]
 WantedBy=default.target
-EOL
+EOF
 
-# Konfigurasi logrotate
-echo "📝 Mengkonfigurasi logrotate..."
-sudo tee /etc/logrotate.d/genieacs << EOL
+# config logrotate
+ cat << EOF > /etc/logrotate.d/genieacs
 /var/log/genieacs/*.log /var/log/genieacs/*.yaml {
     daily
     rotate 30
@@ -143,43 +169,42 @@ sudo tee /etc/logrotate.d/genieacs << EOL
     delaycompress
     dateext
 }
-EOL
-
-# Enable dan start services
-echo "🚀 Mengaktifkan dan menjalankan services..."
-sudo systemctl daemon-reload
-
-for service in genieacs-cwmp genieacs-nbi genieacs-fs genieacs-ui; do
-    sudo systemctl enable $service
-    sudo systemctl start $service
-    sudo systemctl status $service
-    check_status "Service $service"
-done
-
-# Copy folder genieacs ke /usr/lib/node_modules
-echo "📋 Menyalin folder genieacs ke /usr/lib/node_modules..."
-if [ -d "./genieacs" ]; then
-    sudo cp -ru genieacs /usr/lib/node_modules
-    check_status "Penyalinan folder genieacs"
+EOF
+    echo -e "${GREEN}========== Install APP GenieACS selesai... ==============${NC}"
+    systemctl daemon-reload
+    systemctl enable --now genieacs-{cwmp,fs,ui,nbi}
+    systemctl start genieacs-{cwmp,fs,ui,nbi}    
+    echo -e "${GREEN}================== Sukses genieACS CWMP, FS, NBI, UI ==================${NC}"
 else
-    echo "❌ Folder genieacs tidak ditemukan di direktori saat ini"
+    echo -e "${GREEN}============================================================================${NC}"
+    echo -e "${GREEN}=================== GenieACS sudah terinstall sebelumnya. ==================${NC}"
+fi
+
+#Sukses
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
+echo -e "${GREEN}=================== Informasi: Whatsapp 081947215703 =======================${NC}"
+echo -e "${GREEN}============================================================================${NC}"
+cp -ru genieacs /usr/lib/node_modules/
+echo -e "${GREEN}Sekarang install parameter. Apakah anda ingin melanjutkan? (y/n)${NC}"
+read confirmation
+
+if [ "$confirmation" != "y" ]; then
+    echo -e "${GREEN}Install dibatalkan..${NC}"
+    
     exit 1
 fi
+for ((i = 5; i >= 1; i--)); do
+    sleep 1
+    echo "Lanjut Install Parameter $i. Tekan ctrl+c untuk membatalkan"
+done
 
-# Restore database jika ada
-if [ -d "./db" ]; then
-    echo "💾 Memulihkan database..."
-    mongorestore --db genieacs ./db
-    check_status "Pemulihan database"
-    
-    # Restart services setelah restore database
-    echo "🔄 Me-restart services..."
-    for service in genieacs-cwmp genieacs-nbi genieacs-fs genieacs-ui; do
-        sudo systemctl restart $service
-        check_status "Restart service $service"
-    done
-fi
+mongorestore --db genieacs --drop /root/db
+echo -e "${GREEN}============================================================================${NC}"
+echo -e "${GREEN}=================== VIRTUAL PARAMETER BERHASIL DI INSTALL. =================${NC}"
+echo -e "${GREEN}===Jika ACS URL berbeda, silahkan edit di Admin >> Provosions >> inform ====${NC}"
+echo -e "${GREEN}========== GenieACS UI akses port 3000. : http://$local_ip:3000 ============${NC}"
+echo -e "${GREEN}=================== Informasi: Whatsapp 081947215703 =======================${NC}"
+echo -e "${GREEN}============================================================================${NC}"
 
-echo "========================================="
-echo "    INSTALASI SELESAI!                  "
-echo "=========================================" 
+cd
