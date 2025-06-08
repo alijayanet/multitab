@@ -1,4 +1,4 @@
-# ACSI ALIJAYA GENIEACS INSTALLER
+# ALIJAYA GENIEACS INSTALL MULTITAB
 
 Script instalasi otomatis untuk GenieACS dengan dukungan NodeJS v20 dan MongoDB.
 
