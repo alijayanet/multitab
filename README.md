@@ -17,5 +17,8 @@ cp -ru genieacs /usr/lib/node_modules/
 ```
 mongorestore --db genieacs --drop /root/db
 ```
+```
+reboot
+```
 ## Lisensi
 © 2025 ALIJAYA ACS MULTITAB
