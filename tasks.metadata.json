@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"genieacs.tasks"},{"v":2,"key":{"device":1,"timestamp":1},"name":"device_1_timestamp_1","ns":"genieacs.tasks"}],"uuid":"bac066cf462b4b379941c85ec2824b93"}
