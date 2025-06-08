@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"22a1117c5124465eb8d734e1cb68d14f","collectionName":"devices","type":"collection"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"genieacs.devices"}],"uuid":"924dfc37711c417e837a235866c532bd"}
