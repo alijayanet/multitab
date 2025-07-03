@@ -28,6 +28,8 @@ cp provisions.bson /root/db
 cp provisions.metadata.json /root/db
 cp tasks.bson /root/db
 cp tasks.metadata.json /root/db
+cp virtualparameter.bson /root/db
+cp virtualparameter.metadata.json /root/db
 cd 
 ```
 ```
