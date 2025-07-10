@@ -36,7 +36,9 @@ cd
 mongorestore --db genieacs --drop /root/db
 ```
 ```
-reboot
+systemctl daemon-reload
+systemctl stop --now genieacs-{cwmp,fs,ui,nbi}
+systemctl start --now genieacs-{cwmp,fs,ui,nbi}
 ```
 
 ## Lisensi
