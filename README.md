@@ -12,6 +12,12 @@ git clone https://github.com/alijayanet/multitab
 cd multitab
 ```
 ```
+chmod +x install.sh
+```
+```
+bash install.sh
+```
+```
 cp -ru genieacs /usr/lib/node_modules/
 ```
 ```
