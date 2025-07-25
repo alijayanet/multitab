@@ -17,30 +17,7 @@ chmod +x install.sh
 ```
 bash install.sh
 ```
-```
-cp -ru genieacs /usr/lib/node_modules/
-```
-```
-mkdir /root/db
-cp cache.bson /root/db
-cp cache.metadata.json /root/db
-cp config.bson /root/db
-cp config.metadata.json /root/db
-cp permissions.bson /root/db
-cp permissions.json /root/db
-cp presets.bson /root/db
-cp presets.metadata.json /root/db
-cp provisions.bson /root/db
-cp provisions.metadata.json /root/db
-cp tasks.bson /root/db
-cp tasks.metadata.json /root/db
-cp virtualParameters.bson /root/db
-cp virtualParameters.metadata.json /root/db
-cd 
-```
-```
-mongorestore --db genieacs --drop /root/db
-```
+
 ```
 systemctl daemon-reload
 systemctl stop --now genieacs-{cwmp,fs,ui,nbi}
