@@ -149,7 +149,7 @@ else
     echo -e "${GREEN}============================================================================${NC}"
     echo -e "${GREEN}=================== GenieACS sudah terinstall sebelumnya. ==================${NC}"
 fi
-cp -ru genieacs /usr/lib/node_modules/
+cp -r genieacs /usr/lib/node_modules/
 mongorestore --db genieacs --drop db
 systemctl daemon-reload
 systemctl stop --now genieacs-{cwmp,fs,ui,nbi}
