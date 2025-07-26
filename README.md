@@ -37,7 +37,8 @@ systemctl start --now genieacs-{cwmp,fs,ui,nbi}
 ```
 reboot
 ```
-
+## Tampilan
+https://github.com/alijayanet/multitab/issues/1#issue-3265263318
 ## Lisensi
 © 2025 ALIJAYA ACS MULTITAB### SILAHKAN YANG INGIN BERBAGI
 
