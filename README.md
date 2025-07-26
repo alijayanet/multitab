@@ -21,6 +21,22 @@ bash install.sh
 ```
 reboot
 ```
+## Bagi yang sudah ter Install Genieacs 
+
+```
+cp -r genieacs /usr/lib/node_modules/
+```
+```
+mongorestore --db genieacs --drop db
+```
+```
+systemctl daemon-reload
+systemctl stop --now genieacs-{cwmp,fs,ui,nbi}
+systemctl start --now genieacs-{cwmp,fs,ui,nbi}
+```
+```
+reboot
+```
 
 ## Lisensi
 © 2025 ALIJAYA ACS MULTITAB### SILAHKAN YANG INGIN BERBAGI
