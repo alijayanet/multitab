@@ -37,6 +37,8 @@ systemctl start --now genieacs-{cwmp,fs,ui,nbi}
 ```
 reboot
 ```
+#### PERHATIAN
+# Config lama akan terganti dengan config baru, harap di backup dulu
 ## Tampilan
 <img width="1358" height="650" alt="Image" src="https://github.com/user-attachments/assets/d2689a26-9eed-4449-a0d3-2edffddd7bc6" />
 <img width="1358" height="650" alt="Image" src="https://github.com/user-attachments/assets/c13ed312-d007-4cc2-987d-e82f171dd7ce" />
