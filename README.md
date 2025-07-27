@@ -27,6 +27,12 @@ reboot
 # INSTALLER GENIEACS Ubuntu 22.04 (Mostech)
 https://github.com/safrinnetwork/GACS-Ubuntu-22.04
 ```
+sudo apt-get install dos2unix
+```
+```
+dos2unix GACS-Jammy.sh
+```
+```
 bash GACS-Jammy.sh
 ```
 
