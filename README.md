@@ -1,4 +1,4 @@
-# AUTO INSTALL GENIEACS MULTITAB THEMA DARKMODE
+# AUTO INSTALL GENIEACS MULTITAB Ubuntu 20.04
 
 
 ## Cara Penggunaan
@@ -12,12 +12,16 @@ git clone https://github.com/alijayanet/multitab
 cd multitab
 ```
 ```
-chmod +x install.sh
+chmod +x install.sh && chmod +x GACS-Jammy.sh
 ```
 ```
 bash install.sh
 ```
-
+# INSTALLER GENIEACS Ubuntu 22.04 (Mostech)
+https://github.com/safrinnetwork/GACS-Ubuntu-22.04
+```
+bash GACS-Jammy.sh
+```
 ```
 reboot
 ```
