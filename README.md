@@ -16,25 +16,18 @@ git clone https://github.com/alijayanet/multitab
 cd multitab
 ```
 ```
-chmod +x install.sh && chmod +x GACS-Jammy.sh
+chmod +x install.sh && chmod +x install-v22-04.sh
 ```
 ```
 bash install.sh
 ```
 ```
+bash install-v22-04.sh
+```
+```
 reboot
 ```
-# INSTALLER GENIEACS Ubuntu 22.04 (Mostech)
-https://github.com/safrinnetwork/GACS-Ubuntu-22.04
-```
-sudo apt-get install dos2unix
-```
-```
-dos2unix GACS-Jammy.sh
-```
-```
-bash GACS-Jammy.sh
-```
+
 
 ## Bagi yang sudah ter Install Genieacs 
 
