@@ -17,6 +17,9 @@ chmod +x install.sh && chmod +x GACS-Jammy.sh
 ```
 bash install.sh
 ```
+```
+reboot
+```
 # INSTALLER GENIEACS Ubuntu 22.04 (Mostech)
 https://github.com/safrinnetwork/GACS-Ubuntu-22.04
 ```
