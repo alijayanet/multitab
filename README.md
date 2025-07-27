@@ -18,9 +18,11 @@ cd multitab
 ```
 chmod +x install.sh && chmod +x install-v22-04.sh
 ```
+# ubuntu v20.04
 ```
 bash install.sh
 ```
+# ubuntu v22.04 (Jammy)
 ```
 bash install-v22-04.sh
 ```
