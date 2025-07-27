@@ -29,9 +29,7 @@ https://github.com/safrinnetwork/GACS-Ubuntu-22.04
 ```
 bash GACS-Jammy.sh
 ```
-```
-reboot
-```
+
 ## Bagi yang sudah ter Install Genieacs 
 
 ```
