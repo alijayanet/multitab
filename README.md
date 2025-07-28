@@ -47,7 +47,8 @@ systemctl start --now genieacs-{cwmp,fs,ui,nbi}
 ```
 reboot
 ```
-Jangan lupa edit ip url http://192.168.8.89:7547 dengan ip server anda
+Jangan lupa edit di admin provision inform 
+ip url http://192.168.8.89:7547 dengan ip server anda
 #### PERHATIAN
 # Config lama akan terganti dengan config baru, harap di backup dulu
 
