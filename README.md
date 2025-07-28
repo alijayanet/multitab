@@ -54,6 +54,7 @@ ip url http://192.168.8.89:7547 dengan ip server anda
 
 ## Lisensi
 © 2025 ALIJAYA ACS MULTITAB### SILAHKAN YANG INGIN BERBAGI
+https://paypal.me/warnetalijayaID?locale.x=id_ID&country.x=ID
 
 ![Image](https://github.com/user-attachments/assets/724e5ac2-626e-4f2d-bd1f-1265b70b544f)
 
