@@ -29,7 +29,7 @@ bash install-v22-04.sh
 ```
 reboot
 ```
-Jangan lupa edit ip url http://192.168.8.89:7547 dengan ip server anda
+Jangan lupa edit di admin provision inform ip url http://192.168.8.89:7547 dengan ip server anda
 
 ## Bagi yang sudah ter Install Genieacs 
 
