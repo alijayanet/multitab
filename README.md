@@ -15,6 +15,9 @@ git clone https://github.com/alijayanet/multitab
 ```
 cd multitab
 ```
+```
+chmod +x install-v22-04.sh && install.sh
+```
 Ubuntu 22.04
 ```
 install-v22-04.sh
