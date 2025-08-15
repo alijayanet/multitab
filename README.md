@@ -16,7 +16,7 @@ git clone https://github.com/alijayanet/multitab
 cd multitab
 ```
 ```
-chmod +x install-v22-04.sh && install-armbian.sh
+chmod +x install-v22-04.sh
 ```
 Ubuntu 20.04/22.04
 ```
@@ -191,6 +191,7 @@ docker-compose up -d
  2025 ALIJAYA ACS MULTITAB### SILAHKAN YANG INGIN BERBAGI
 
 ![Image](https://github.com/user-attachments/assets/724e5ac2-626e-4f2d-bd1f-1265b70b544f)
+
 
 
 
