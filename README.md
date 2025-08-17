@@ -20,11 +20,11 @@ chmod +x install-v22-04.sh
 ```
 Ubuntu 20.04/22.04
 ```
-install-v22-04.sh
+bash install-v22-04.sh
 ```
 ARMBIAN
 ```
-install-armbian.sh
+bash install-armbian.sh
 ```
 ```
 reboot
@@ -191,6 +191,7 @@ docker-compose up -d
  2025 ALIJAYA ACS MULTITAB### SILAHKAN YANG INGIN BERBAGI
 
 ![Image](https://github.com/user-attachments/assets/724e5ac2-626e-4f2d-bd1f-1265b70b544f)
+
 
 
 
